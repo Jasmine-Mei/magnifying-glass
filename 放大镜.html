@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -69,8 +68,74 @@
   </div>
 </body>
 <script>
-    let small = document.querySelector('.small');
-    let mask = document.querySelector('.mask');
-    let big = document.querySelector('.big');
+  let small = document.querySelector('.small');
+  let mask = document.querySelector('.mask');
+  let big = document.querySelector('.big');
+
+  // 注册和设置鼠标移入样式
+  small.onmouseover = function () {
+    mask.style.display = 'block';
+    big.style.display = 'block';
+  }
+  // 注册和设置鼠标移出样式
+  small.onmouseout = function () {
+    mask.style.display = 'none';
+    big.style.display = 'none';
+  }
+
+  // 获取box元素
+  let box = document.querySelector('.box');
+  // 获取大图片
+  let bigImg = document.querySelector('.big >img');
+
+  // 给小图片设置和注册鼠标移动样式
+  small.onmousemove = function (event) {
+    // 让黄色遮罩随着鼠标移动
+    // 2.1 先得到鼠标的位置 - 页面坐标
+    let mx = event.pageX;
+    let my = event.pageY;
+
+    // 获取大盒子的水平偏移量和垂直偏移量
+    let smallLeft = box.offsetLeft;
+    let smallTop = box.offsetTop;
+
+    // 获取遮罩的一半宽、高
+    let halfWidth = mask.offsetWidth / 2;
+    let halfHeight = mask.offsetHeight / 2;
+
+    // 2.4 根据公式计算出遮罩的位置
+    // 计算出鼠标在small里的位置
+    let left = mx - smallLeft - halfWidth;
+    let top = my - smallTop - halfHeight;
+
+    // 限定遮罩的移动范围 左和上
+    left = left <= 0 ? 0 : left;
+    top = top <= 0 ? 0 : top;
+
+    // 限定遮罩的移动范围 下和右
+    let maxLeft = small.offsetWidth - mask.offsetWidth;
+    let maxTop = small.offsetHeight - mask.offsetHeight;
+    left = left >= maxLeft ? maxLeft : left;
+    top = top >= maxTop ? maxTop : top;
+
+    // 2.5 设置给遮罩
+    mask.style.left = left + 'px';
+    mask.style.top = top + 'px';
+
+    // 设置大图随着遮罩的遮的部位放大
+    // 3.1 先求出大图的最大位移
+    let bigImgMaxLeft = bigImg.offsetWidth - big.offsetWidth;
+    let bigImgMaxTop = bigImg.offsetHeight - big.offsetHeight;
+    // 3.2 算出大图应该在的位置
+    let bigImgLeft = left * bigImgMaxLeft / maxLeft;
+    let bigImgTop = top * bigImgMaxTop / maxTop;
+    // 3.3 设置给大图
+    bigImg.style.top = -bigImgTop + 'px';
+    bigImg.style.left = -bigImgLeft + 'px';
+
+
+  }
+
 </script>
+
 </html>
